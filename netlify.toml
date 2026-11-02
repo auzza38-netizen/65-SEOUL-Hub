@@ -1,0 +1,4 @@
+[build.environment]
+  # Firebase's browser configuration is intentionally public and can trigger
+  # heuristic key detection. Keep environment-variable secret scanning enabled.
+  SECRETS_SCAN_SMART_DETECTION_ENABLED = "false"
