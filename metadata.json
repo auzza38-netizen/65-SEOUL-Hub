@@ -1,0 +1,6 @@
+{
+  "name": "65 SEOUL | Stock & Purchase Hub",
+  "description": "ระบบบริหารสต็อกสินค้าและจัดซื้อร้านอาหารเกาหลี 65 Seoul พร้อมระบบ OCR ใบเสร็จ ตรวจนับสต็อกรายวัน และระบบอนุมัติระดับองค์กร",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

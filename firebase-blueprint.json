@@ -1,0 +1,149 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile with role-based access control (Master Admin or Staff)",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 128 },
+        "displayName": { "type": "string", "maxLength": 128 },
+        "role": { "type": "string", "enum": ["master_admin", "staff"] },
+        "status": { "type": "string", "enum": ["active", "disabled"] },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["uid", "email", "role", "status"]
+    },
+    "ItemMaster": {
+      "title": "ItemMaster",
+      "description": "Stock inventory catalog item for 65 Seoul Korean restaurant",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "code": { "type": "string", "maxLength": 64 },
+        "nameTh": { "type": "string", "maxLength": 200 },
+        "nameKo": { "type": "string", "maxLength": 200 },
+        "category": { "type": "string", "maxLength": 100 },
+        "unit": { "type": "string", "maxLength": 50 },
+        "minStock": { "type": "number" },
+        "parLevel": { "type": "number" },
+        "currentStock": { "type": "number" },
+        "baseStock": { "type": "number" },
+        "baseStockConfirmed": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["active", "inactive"] },
+        "averageCost": { "type": "number" },
+        "lastPurchasePrice": { "type": "number" },
+        "lastSupplier": { "type": "string", "maxLength": 200 },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["code", "nameTh", "category", "unit", "status"]
+    },
+    "StockCheck": {
+      "title": "StockCheck",
+      "description": "Daily stock verification sheet with draft, submit, and approval lifecycle",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "date": { "type": "string", "maxLength": 20 },
+        "shift": { "type": "string", "enum": ["morning", "night", "full_day"] },
+        "category": { "type": "string", "maxLength": 100 },
+        "status": { "type": "string", "enum": ["draft", "submitted", "approved", "rejected"] },
+        "checkerId": { "type": "string", "maxLength": 128 },
+        "checkerName": { "type": "string", "maxLength": 128 },
+        "checkerEmail": { "type": "string", "maxLength": 128 },
+        "approverId": { "type": "string", "maxLength": 128 },
+        "approverName": { "type": "string", "maxLength": 128 },
+        "notes": { "type": "string", "maxLength": 1000 },
+        "items": { "type": "array" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["date", "shift", "status", "checkerId", "checkerName"]
+    },
+    "PurchaseBill": {
+      "title": "PurchaseBill",
+      "description": "Purchases and OCR-scanned invoices with Master Admin verification",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "billNumber": { "type": "string", "maxLength": 100 },
+        "date": { "type": "string", "maxLength": 20 },
+        "supplierName": { "type": "string", "maxLength": 200 },
+        "category": { "type": "string", "enum": ["raw_material", "packaging", "consumable", "equipment", "other"] },
+        "paymentMethod": { "type": "string", "maxLength": 50 },
+        "subtotal": { "type": "number" },
+        "discount": { "type": "number" },
+        "tax": { "type": "number" },
+        "totalAmount": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending_approval", "approved", "rejected"] },
+        "hasStockApplied": { "type": "boolean" },
+        "receiptImageUrl": { "type": "string", "maxLength": 1000000 },
+        "items": { "type": "array" },
+        "purchaserId": { "type": "string", "maxLength": 128 },
+        "purchaserName": { "type": "string", "maxLength": 128 },
+        "approverId": { "type": "string", "maxLength": 128 },
+        "approverName": { "type": "string", "maxLength": 128 },
+        "notes": { "type": "string", "maxLength": 1000 },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["date", "supplierName", "category", "totalAmount", "status", "purchaserId"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Immutable security and operational audit trail",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "action": { "type": "string", "maxLength": 100 },
+        "entityType": { "type": "string", "maxLength": 100 },
+        "entityId": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "userEmail": { "type": "string", "maxLength": 128 },
+        "userName": { "type": "string", "maxLength": 128 },
+        "details": { "type": "string", "maxLength": 5000 },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["action", "entityType", "userId", "timestamp"]
+    },
+    "AdminRecord": {
+      "title": "AdminRecord",
+      "description": "Lookup document for Master Admins",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 128 },
+        "assignedAt": { "type": "string" }
+      },
+      "required": ["uid", "email"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "User profile with role configuration"
+    },
+    "/admins/{adminId}": {
+      "schema": { "$ref": "#/entities/AdminRecord" },
+      "description": "Lookup index for admin verification in security rules"
+    },
+    "/items/{itemId}": {
+      "schema": { "$ref": "#/entities/ItemMaster" },
+      "description": "173 item catalog master and stock counts"
+    },
+    "/stockChecks/{checkId}": {
+      "schema": { "$ref": "#/entities/StockCheck" },
+      "description": "Daily stock counting worksheets"
+    },
+    "/purchases/{purchaseId}": {
+      "schema": { "$ref": "#/entities/PurchaseBill" },
+      "description": "Receipts and purchases captured via OCR and manual entry"
+    },
+    "/auditLogs/{logId}": {
+      "schema": { "$ref": "#/entities/AuditLog" },
+      "description": "System operational audit trail"
+    }
+  }
+}
