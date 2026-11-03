@@ -1,0 +1,6 @@
+[build.environment]
+  BUN_VERSION = "1.3.12"
+  # Firebase browser settings are public identifiers, confirmed by the owner.
+  # Scope the exception to the config source and its dedicated output chunk.
+  # Keep all application code and other build assets covered by secrets scanning.
+  SECRETS_SCAN_OMIT_PATHS = "firebase-applet-config.json,dist/assets/firebase-public-config-*.js"
