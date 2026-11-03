@@ -6,9 +6,25 @@ import {defineConfig} from 'vite';
 export default defineConfig(() => {
   return {
     plugins: [react(), tailwindcss()],
+    build: {
+      rolldownOptions: {
+        output: {
+          codeSplitting: {
+            groups: [
+              {
+                // Keep public Firebase settings separate so the scanner
+                // exception never covers the application bundle.
+                name: 'firebase-public-config',
+                test: /[\\/]firebase-applet-config\.json$/,
+              },
+            ],
+          },
+        },
+      },
+    },
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, '.'),
+        '@': path.resolve(import.meta.dirname, '.'),
       },
     },
     server: {
