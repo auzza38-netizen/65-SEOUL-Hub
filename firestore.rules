@@ -56,7 +56,7 @@ service cloud.firestore {
     // User profiles (Self update, Admin manage)
     match /users/{userId} {
       allow read: if isSignedIn();
-      allow create: if isSignedIn() && request.auth.uid == userId && isValidId(userId);
+      allow create: if isSignedIn() && (request.auth.uid == userId || isAdmin()) && isValidId(userId);
       allow update: if isSignedIn() && (
         isAdmin() ||
         request.auth.uid == userId

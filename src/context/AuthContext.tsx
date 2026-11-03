@@ -7,15 +7,70 @@ import {
   getRedirectResult,
   setPersistence,
   browserLocalPersistence,
-  signOut as fbSignOut 
+  signOut as fbSignOut,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  updateProfile
 } from 'firebase/auth';
 import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
 import { auth, googleProvider, db, testConnection } from '../firebase';
-import { AppUser, UserRole } from '../types';
+import { AppUser, UserRole, UserPermissions } from '../types';
+
+export const getDefaultPermissionsForRole = (role: UserRole): UserPermissions => {
+  switch (role) {
+    case 'master_admin':
+      return {
+        canManageStock: true,
+        canManagePurchases: true,
+        canManageSales: true,
+        canViewFinance: true,
+        canApproveItems: true,
+        canManageSystem: true,
+      };
+    case 'manager':
+      return {
+        canManageStock: true,
+        canManagePurchases: true,
+        canManageSales: true,
+        canViewFinance: true,
+        canApproveItems: true,
+        canManageSystem: false,
+      };
+    case 'cashier':
+      return {
+        canManageStock: false,
+        canManagePurchases: false,
+        canManageSales: true,
+        canViewFinance: false,
+        canApproveItems: false,
+        canManageSystem: false,
+      };
+    case 'viewer':
+      return {
+        canManageStock: false,
+        canManagePurchases: false,
+        canManageSales: false,
+        canViewFinance: true,
+        canApproveItems: false,
+        canManageSystem: false,
+      };
+    case 'staff':
+    default:
+      return {
+        canManageStock: true,
+        canManagePurchases: true,
+        canManageSales: false,
+        canViewFinance: false,
+        canApproveItems: false,
+        canManageSystem: false,
+      };
+  }
+};
 
 interface AuthContextType {
   currentUser: User | null;
   userProfile: AppUser | null;
+  permissions: UserPermissions;
   loading: boolean;
   isAdmin: boolean;
   isStaff: boolean;
@@ -23,6 +78,8 @@ interface AuthContextType {
   isPendingApproval: boolean;
   isRejected: boolean;
   signInWithGoogle: (useRedirect?: boolean) => Promise<void>;
+  signInWithEmail: (email: string, password: string) => Promise<void>;
+  signUpWithEmail: (email: string, password: string, displayName: string, position?: string, phone?: string) => Promise<void>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   authError: string | null;
@@ -128,12 +185,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       } else {
         // Create initial profile - Non-admins start as 'pending' awaiting Master Admin approval
+        const initialRole: UserRole = isAdminRole ? 'master_admin' : 'staff';
         const newProfile: AppUser = {
           uid: user.uid,
           email: user.email || '',
           displayName: user.displayName || user.email?.split('@')[0] || (isAdminRole ? 'Master Admin' : 'ผู้ใช้งาน'),
-          role: isAdminRole ? 'master_admin' : 'staff',
+          role: initialRole,
           status: isAdminRole ? 'active' : 'pending',
+          permissions: getDefaultPermissionsForRole(initialRole),
           photoURL: user.photoURL || undefined,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
@@ -146,12 +205,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.error('Failed to sync user profile:', error);
       // Fallback in-memory profile so master admin is not locked out
       const isHardcodedAdmin = isMasterAdminEmail(user.email);
+      const fallbackRole: UserRole = isHardcodedAdmin ? 'master_admin' : 'staff';
       setUserProfile({
         uid: user.uid,
         email: user.email || '',
         displayName: user.displayName || (isHardcodedAdmin ? 'Master Admin' : 'ผู้ใช้งาน'),
-        role: isHardcodedAdmin ? 'master_admin' : 'staff',
+        role: fallbackRole,
         status: isHardcodedAdmin ? 'active' : 'pending',
+        permissions: getDefaultPermissionsForRole(fallbackRole),
         photoURL: user.photoURL || undefined,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -278,6 +339,106 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const signInWithEmail = async (email: string, pass: string) => {
+    try {
+      setLoading(true);
+      setAuthError(null);
+      const cleanEmail = email.trim();
+      const res = await signInWithEmailAndPassword(auth, cleanEmail, pass);
+      if (res.user) {
+        await syncUserProfile(res.user);
+      }
+    } catch (error: any) {
+      console.error('Email sign-in failed:', error);
+      let errorMsg = 'เข้าสู่ระบบไม่สำเร็จ';
+      if (
+        error?.code === 'auth/invalid-credential' ||
+        error?.code === 'auth/wrong-password' ||
+        error?.code === 'auth/user-not-found'
+      ) {
+        errorMsg = 'อีเมลหรือรหัสผ่านไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง';
+      } else if (error?.code === 'auth/invalid-email') {
+        errorMsg = 'รูปแบบอีเมลไม่ถูกต้อง กรุณาตรวจสอบอีเมล';
+      } else if (error?.code === 'auth/user-disabled') {
+        errorMsg = 'บัญชีนี้ถูกปิดการใช้งาน กรุณาติดต่อ Master Admin';
+      } else if (error?.code === 'auth/operation-not-allowed') {
+        errorMsg = 'ระบบ Email Authentication ยังไม่ได้เปิดใช้งานใน Firebase Console สามารถเข้าสู่ระบบด้วย Google แทนได้ทันที';
+      } else if (error?.code === 'auth/network-request-failed') {
+        errorMsg = 'เครือข่ายอินเทอร์เน็ตมีปัญหา กรุณาตรวจสอบการเชื่อมต่อ';
+      } else if (error?.message) {
+        errorMsg = error.message;
+      }
+      setAuthError(errorMsg);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const signUpWithEmail = async (
+    email: string,
+    pass: string,
+    displayName: string,
+    position?: string,
+    phone?: string
+  ) => {
+    try {
+      setLoading(true);
+      setAuthError(null);
+      const cleanEmail = email.trim();
+      const cleanName = displayName.trim();
+
+      const res = await createUserWithEmailAndPassword(auth, cleanEmail, pass);
+      if (res.user) {
+        try {
+          await updateProfile(res.user, {
+            displayName: cleanName,
+          });
+        } catch (e) {
+          console.warn('Update profile display name error:', e);
+        }
+
+        const isAdminRole = isMasterAdminEmail(cleanEmail);
+        const initialRole: UserRole = isAdminRole ? 'master_admin' : 'staff';
+
+        const newProfile: AppUser = {
+          uid: res.user.uid,
+          email: cleanEmail,
+          displayName: cleanName || cleanEmail.split('@')[0],
+          role: initialRole,
+          status: isAdminRole ? 'active' : 'pending',
+          permissions: getDefaultPermissionsForRole(initialRole),
+          position: position?.trim() || undefined,
+          phone: phone?.trim() || undefined,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+
+        const userDocRef = doc(db, 'users', res.user.uid);
+        await setDoc(userDocRef, newProfile);
+        setUserProfile(newProfile);
+      }
+    } catch (error: any) {
+      console.error('Email sign-up failed:', error);
+      let errorMsg = 'ลงทะเบียนไม่สำเร็จ';
+      if (error?.code === 'auth/email-already-in-use') {
+        errorMsg = 'อีเมลนี้มีอยู่ในระบบแล้ว กรุณาเลือกแท็บ "เข้าสู่ระบบด้วยอีเมล" หรือเข้าด้วย Google';
+      } else if (error?.code === 'auth/weak-password') {
+        errorMsg = 'รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร';
+      } else if (error?.code === 'auth/invalid-email') {
+        errorMsg = 'รูปแบบอีเมลไม่ถูกต้อง';
+      } else if (error?.code === 'auth/operation-not-allowed') {
+        errorMsg = 'ระบบ Email Authentication ยังไม่ได้เปิดใช้งานใน Firebase Console สามารถเข้าสู่ระบบด้วย Google แทนได้ทันที';
+      } else if (error?.message) {
+        errorMsg = error.message;
+      }
+      setAuthError(errorMsg);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const signOut = async () => {
     try {
       await fbSignOut(auth);
@@ -300,11 +461,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const isPendingApproval = Boolean(currentUser && !isAdmin && userProfile?.status === 'pending');
   const isRejected = Boolean(currentUser && !isAdmin && (userProfile?.status === 'rejected' || userProfile?.status === 'disabled'));
 
+  // Effective granular permissions
+  const permissions: UserPermissions = React.useMemo(() => {
+    if (isAdmin) {
+      return getDefaultPermissionsForRole('master_admin');
+    }
+    if (userProfile?.permissions) {
+      return userProfile.permissions;
+    }
+    return getDefaultPermissionsForRole(userProfile?.role || 'staff');
+  }, [isAdmin, userProfile]);
+
   return (
     <AuthContext.Provider
       value={{
         currentUser,
         userProfile,
+        permissions,
         loading,
         isAdmin,
         isStaff,
@@ -312,6 +485,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isPendingApproval,
         isRejected,
         signInWithGoogle,
+        signInWithEmail,
+        signUpWithEmail,
         signOut,
         refreshProfile,
         authError,

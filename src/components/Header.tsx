@@ -422,6 +422,18 @@ export const Header: React.FC<HeaderProps> = ({
                         <Crown className="w-2.5 h-2.5" />
                         Master Admin
                       </span>
+                    ) : userProfile?.role === 'manager' ? (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-purple-600 text-white shadow-xs">
+                        Manager
+                      </span>
+                    ) : userProfile?.role === 'cashier' ? (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-600 text-white shadow-xs">
+                        Cashier
+                      </span>
+                    ) : userProfile?.role === 'viewer' ? (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-600 text-white shadow-xs">
+                        Viewer
+                      </span>
                     ) : (
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-zinc-100 text-zinc-700 border border-zinc-200">
                         Staff

@@ -1,5 +1,14 @@
-export type UserRole = 'master_admin' | 'staff' | 'viewer';
+export type UserRole = 'master_admin' | 'manager' | 'staff' | 'cashier' | 'viewer';
 export type UserStatus = 'active' | 'pending' | 'disabled' | 'rejected';
+
+export interface UserPermissions {
+  canManageStock: boolean;       // ตรวจนับสต็อก & คลังวัตถุดิบ
+  canManagePurchases: boolean;   // สแกนบิลจัดซื้อ & ตรวจสอบบิล
+  canManageSales: boolean;       // บันทึกยอดขายประจำวัน & ค่าจ้าง
+  canViewFinance: boolean;       // ดูแดชบอร์ดการเงิน & รายงาน
+  canApproveItems: boolean;      // สิทธิ์อนุมัติบิล / อนุมัติการนับสต็อก
+  canManageSystem: boolean;      // จัดการระบบและสิทธิ์ผู้ใช้งาน
+}
 
 export interface AppUser {
   uid: string;
@@ -7,6 +16,9 @@ export interface AppUser {
   displayName: string;
   role: UserRole;
   status: UserStatus;
+  permissions?: UserPermissions;
+  position?: string;
+  phone?: string;
   photoURL?: string;
   approvedBy?: string;
   approvedByName?: string;
