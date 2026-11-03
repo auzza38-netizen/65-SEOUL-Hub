@@ -1,0 +1,4 @@
+[build.environment]
+  # Firebase web configuration is intentionally public and used by the browser SDK.
+  # Keep secrets scanning enabled elsewhere in the repository and build output.
+  SECRETS_SCAN_OMIT_PATHS = "firebase-applet-config.json"
