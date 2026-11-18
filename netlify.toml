@@ -1,0 +1,10 @@
+[build]
+  command = "bun run build"
+  publish = "dist"
+
+[build.environment]
+  BUN_VERSION = "1.3.12"
+  # Firebase web configuration is public and required by the browser SDK.
+  # Vite isolates this JSON into the named chunk; keep all other code scanned.
+  # Never add private keys or server credentials to this configuration.
+  SECRETS_SCAN_OMIT_PATHS = "firebase-applet-config.json,dist/assets/firebase-public-config-*.js"

@@ -8,7 +8,23 @@ export default defineConfig(() => {
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, '.'),
+        '@': path.resolve(import.meta.dirname, '.'),
+      },
+    },
+    build: {
+      rolldownOptions: {
+        output: {
+          codeSplitting: {
+            groups: [{
+              // Keep only the public Firebase web config in the scan-exempt chunk.
+              name: 'firebase-public-config',
+              test: /[/\\]firebase-applet-config\.json$/,
+              includeDependenciesRecursively: false,
+              minSize: 0,
+              minShareCount: 1,
+            }],
+          },
+        },
       },
     },
     server: {
