@@ -302,25 +302,27 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
       {/* Top Banner & Period Selector */}
-      <div className="bg-white rounded-2xl p-5 border border-zinc-200 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="bg-white rounded-2xl p-5 sm:p-6 border border-zinc-200/90 shadow-xs flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-zinc-900 font-bold text-lg sm:text-xl">
+          <div className="flex items-center gap-2.5 text-zinc-900">
             <div className="p-2 rounded-xl bg-rose-50 text-rose-600">
               <LayoutDashboard className="w-5 h-5" />
             </div>
-            <span>แดชบอร์ดสรุปรายรับ-รายจ่าย & สถิติร้าน (Financial & Stock Hub)</span>
+            <h1 className="font-display font-bold text-lg sm:text-xl tracking-tight">
+              แดชบอร์ดสรุปรายรับ-รายจ่าย & สถิติร้าน
+            </h1>
           </div>
-          <p className="text-xs sm:text-sm text-zinc-500 mt-1">
+          <p className="text-xs sm:text-sm text-zinc-500 mt-1.5">
             สรุปยอดขาย ต้นทุนจัดซื้อ ค่าจ้าง ค่าน้ำค่าไฟ ค่าเช่า และค่าเสื่อมราคาเฉลี่ยต่อวัน พร้อมระบบวิเคราะห์ AI
           </p>
         </div>
 
         {/* Period Selector Tabs: Day / Week / Month / Year */}
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center bg-zinc-100 p-1 rounded-xl">
+        <div className="flex flex-wrap items-center gap-2.5 w-full lg:w-auto justify-between lg:justify-end">
+          <div className="flex items-center bg-zinc-100 p-1 rounded-xl gap-0.5">
             <button
               onClick={() => setSelectedPeriod('day')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+              className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-all whitespace-nowrap shrink-0 ${
                 selectedPeriod === 'day' ? 'bg-white text-zinc-900 shadow-xs' : 'text-zinc-600 hover:text-zinc-900'
               }`}
             >
@@ -328,7 +330,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </button>
             <button
               onClick={() => setSelectedPeriod('week')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+              className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-all whitespace-nowrap shrink-0 ${
                 selectedPeriod === 'week' ? 'bg-white text-zinc-900 shadow-xs' : 'text-zinc-600 hover:text-zinc-900'
               }`}
             >
@@ -336,7 +338,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </button>
             <button
               onClick={() => setSelectedPeriod('month')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+              className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-all whitespace-nowrap shrink-0 ${
                 selectedPeriod === 'month' ? 'bg-white text-zinc-900 shadow-xs' : 'text-zinc-600 hover:text-zinc-900'
               }`}
             >
@@ -344,7 +346,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </button>
             <button
               onClick={() => setSelectedPeriod('year')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+              className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-all whitespace-nowrap shrink-0 ${
                 selectedPeriod === 'year' ? 'bg-white text-zinc-900 shadow-xs' : 'text-zinc-600 hover:text-zinc-900'
               }`}
             >
@@ -352,22 +354,93 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </button>
           </div>
 
-          <div className="flex items-center gap-1.5 bg-zinc-50 px-2.5 py-1.5 rounded-xl border border-zinc-200 text-xs">
-            <Calendar className="w-4 h-4 text-zinc-500" />
+          <div className="flex items-center gap-2 bg-zinc-50 px-3 py-2 rounded-xl border border-zinc-200 text-xs">
+            <Calendar className="w-4 h-4 text-zinc-500 shrink-0" />
             <input
               type="date"
               value={targetDate}
               onChange={(e) => setTargetDate(e.target.value)}
-              className="bg-transparent font-bold text-zinc-800 text-xs focus:outline-none"
+              className="bg-transparent font-mono font-semibold text-zinc-800 text-xs focus:outline-none"
             />
           </div>
         </div>
       </div>
 
+      {/* Quick Daily Operations Strip */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <button
+          type="button"
+          onClick={() => setActiveTab('sales')}
+          className="group bg-white hover:border-emerald-300 border border-zinc-200/90 rounded-2xl p-3.5 flex items-center justify-between gap-3 text-left transition-all duration-150 shadow-2xs"
+        >
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+              <TrendingUp className="w-4 h-4" />
+            </div>
+            <div className="min-w-0">
+              <div className="text-xs font-bold text-zinc-900 truncate">บันทึกยอดขาย</div>
+              <div className="text-[11px] text-zinc-500 truncate">บุฟเฟต์ & A la carte</div>
+            </div>
+          </div>
+          <ChevronRight className="w-4 h-4 text-zinc-400 group-hover:text-emerald-600 shrink-0 transition-transform group-hover:translate-x-0.5" />
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab('purchases')}
+          className="group bg-white hover:border-rose-300 border border-zinc-200/90 rounded-2xl p-3.5 flex items-center justify-between gap-3 text-left transition-all duration-150 shadow-2xs"
+        >
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0 group-hover:bg-rose-600 group-hover:text-white transition-colors">
+              <Receipt className="w-4 h-4" />
+            </div>
+            <div className="min-w-0">
+              <div className="text-xs font-bold text-zinc-900 truncate">สแกนบิลจัดซื้อ OCR</div>
+              <div className="text-[11px] text-zinc-500 truncate">ถ่ายใบเสร็จ & อนุมัติ</div>
+            </div>
+          </div>
+          <ChevronRight className="w-4 h-4 text-zinc-400 group-hover:text-rose-600 shrink-0 transition-transform group-hover:translate-x-0.5" />
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab('stock-check')}
+          className="group bg-white hover:border-amber-300 border border-zinc-200/90 rounded-2xl p-3.5 flex items-center justify-between gap-3 text-left transition-all duration-150 shadow-2xs"
+        >
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 group-hover:bg-amber-600 group-hover:text-white transition-colors">
+              <ClipboardCheck className="w-4 h-4" />
+            </div>
+            <div className="min-w-0">
+              <div className="text-xs font-bold text-zinc-900 truncate">ตรวจนับสต็อกรอบเย็น</div>
+              <div className="text-[11px] text-zinc-500 truncate">เช็กของคงเหลือก่อนปิด</div>
+            </div>
+          </div>
+          <ChevronRight className="w-4 h-4 text-zinc-400 group-hover:text-amber-600 shrink-0 transition-transform group-hover:translate-x-0.5" />
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab('items')}
+          className="group bg-white hover:border-zinc-400 border border-zinc-200/90 rounded-2xl p-3.5 flex items-center justify-between gap-3 text-left transition-all duration-150 shadow-2xs"
+        >
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-9 h-9 rounded-xl bg-zinc-100 text-zinc-700 flex items-center justify-center shrink-0 group-hover:bg-zinc-900 group-hover:text-white transition-colors">
+              <Boxes className="w-4 h-4" />
+            </div>
+            <div className="min-w-0">
+              <div className="text-xs font-bold text-zinc-900 truncate">คลังวัตถุดิบ</div>
+              <div className="text-[11px] text-zinc-500 truncate font-mono tabular-nums">{items.length} รายการในระบบ</div>
+            </div>
+          </div>
+          <ChevronRight className="w-4 h-4 text-zinc-400 group-hover:text-zinc-900 shrink-0 transition-transform group-hover:translate-x-0.5" />
+        </button>
+      </div>
+
       {/* 4 PRIMARY METRIC CARDS: Revenue, Operating Cost, Net Profit, Net Margin */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* 1. Total Net Revenue */}
-        <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-xs flex flex-col justify-between">
+        <div className="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-xs hover:border-zinc-300 transition-colors flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-zinc-500">รายรับรวม (Net Sales)</span>
             <div className="p-2 rounded-xl bg-emerald-50 text-emerald-600">
@@ -375,10 +448,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-extrabold font-mono text-emerald-700">
+            <div className="text-2xl font-bold font-mono tabular-nums text-emerald-700 tracking-tight">
               ฿{financialMetrics.netSales.toLocaleString()}
             </div>
-            <div className="flex items-center justify-between text-[11px] text-zinc-500 mt-1">
+            <div className="flex items-center justify-between text-[11px] text-zinc-500 mt-1.5 font-mono tabular-nums">
               <span>บุฟเฟต์ ฿{financialMetrics.buffetSales.toLocaleString()}</span>
               {financialMetrics.customerCount > 0 && (
                 <span>{financialMetrics.customerCount} คน</span>
@@ -388,7 +461,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
 
         {/* 2. Total Operating Cost */}
-        <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-xs flex flex-col justify-between">
+        <div className="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-xs hover:border-zinc-300 transition-colors flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-zinc-500">ค่าใช้จ่ายรวม (Total Costs)</span>
             <div className="p-2 rounded-xl bg-rose-50 text-rose-600">
@@ -396,18 +469,18 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-extrabold font-mono text-rose-700">
+            <div className="text-2xl font-bold font-mono tabular-nums text-rose-700 tracking-tight">
               ฿{financialMetrics.totalOperatingCost.toLocaleString(undefined, { maximumFractionDigits: 0 })}
             </div>
-            <div className="text-[11px] text-zinc-500 mt-1 flex justify-between">
+            <div className="text-[11px] text-zinc-500 mt-1.5 flex justify-between font-mono tabular-nums">
               <span>ของ+แรง ฿{(financialMetrics.purchaseTotal + financialMetrics.wagesTotal).toLocaleString()}</span>
-              <span>เฉลี่ยคงที่ ฿{financialMetrics.overheadTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+              <span>คงที่ ฿{financialMetrics.overheadTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
             </div>
           </div>
         </div>
 
         {/* 3. Net Profit */}
-        <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-xs flex flex-col justify-between">
+        <div className="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-xs hover:border-zinc-300 transition-colors flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-zinc-500">กำไรสุทธิ (Net Profit)</span>
             <div className={`p-2 rounded-xl ${
@@ -417,28 +490,29 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
           </div>
           <div className="mt-3">
-            <div className={`text-2xl font-extrabold font-mono ${
+            <div className={`text-2xl font-bold font-mono tabular-nums tracking-tight ${
               financialMetrics.netProfit >= 0 ? 'text-zinc-900' : 'text-rose-600'
             }`}>
               ฿{financialMetrics.netProfit.toLocaleString(undefined, { maximumFractionDigits: 0 })}
             </div>
-            <div className="text-[11px] text-zinc-500 mt-1 flex items-center gap-1">
+            <div className="text-[11px] text-zinc-500 mt-1.5 flex items-center gap-1.5">
               {financialMetrics.netProfit >= 0 ? (
-                <span className="text-emerald-700 font-bold flex items-center">
+                <span className="text-emerald-700 font-semibold flex items-center gap-0.5">
                   <ArrowUpRight className="w-3.5 h-3.5" /> มีกำไร
                 </span>
               ) : (
-                <span className="text-rose-600 font-bold flex items-center">
+                <span className="text-rose-600 font-semibold flex items-center gap-0.5">
                   <ArrowDownRight className="w-3.5 h-3.5" /> ขาดทุน
                 </span>
               )}
-              <span>ในช่วง {periodLabels[selectedPeriod]}</span>
+              <span aria-hidden="true">·</span>
+              <span className="truncate">{periodLabels[selectedPeriod]}</span>
             </div>
           </div>
         </div>
 
         {/* 4. Profit Margin & Prime Cost Ratio */}
-        <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-xs flex flex-col justify-between">
+        <div className="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-xs hover:border-zinc-300 transition-colors flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-zinc-500">อัตรากำไร & Prime Cost</span>
             <div className="p-2 rounded-xl bg-indigo-50 text-indigo-600">
@@ -446,12 +520,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-extrabold font-mono text-indigo-700">
+            <div className="text-2xl font-bold font-mono tabular-nums text-indigo-700 tracking-tight">
               {financialMetrics.profitMargin.toFixed(1)}%
             </div>
-            <div className="text-[11px] text-zinc-500 mt-1 flex justify-between">
-              <span>Prime Cost (Food+Labor):</span>
-              <span className={`font-bold ${financialMetrics.primeCostPct > 60 ? 'text-rose-600' : 'text-emerald-700'}`}>
+            <div className="text-[11px] text-zinc-500 mt-1.5 flex justify-between">
+              <span>Prime Cost (Food+Labor)</span>
+              <span className={`font-mono font-bold tabular-nums ${financialMetrics.primeCostPct > 60 ? 'text-rose-600' : 'text-emerald-700'}`}>
                 {financialMetrics.primeCostPct.toFixed(1)}%
               </span>
             </div>

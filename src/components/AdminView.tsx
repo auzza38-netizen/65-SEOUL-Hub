@@ -894,16 +894,16 @@ export const AdminView: React.FC<AdminViewProps> = ({ items, onRefreshItems }) =
   return (
     <div className="space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
       {/* Header Banner */}
-      <div className="bg-white rounded-2xl p-5 border border-zinc-200 shadow-xs">
-        <div className="flex items-center gap-2">
-          <div className="p-2 rounded-xl bg-zinc-900 text-white">
+      <div className="bg-white rounded-2xl p-5 sm:p-6 border border-zinc-200/90 shadow-xs">
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-zinc-900 text-white shrink-0">
             <ShieldCheck className="w-5 h-5 text-rose-500" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-zinc-900 tracking-tight">
-              Admin & System Hub • จัดการระบบและนำเข้าข้อมูล
+            <h1 className="font-display text-xl font-bold text-zinc-900 tracking-tight">
+              Admin & System Hub · จัดการระบบและสิทธิ์ผู้ใช้งาน
             </h1>
-            <p className="text-sm text-zinc-500">
+            <p className="text-xs sm:text-sm text-zinc-500 mt-0.5">
               ควบคุมสิทธิ์ผู้ใช้งาน (RBAC), กำหนดสิทธิ์รายบุคคล, โหลดแค็ตตาล็อก 173 รายการ และตรวจสอบ Audit Logs
             </p>
           </div>
@@ -1101,14 +1101,14 @@ export const AdminView: React.FC<AdminViewProps> = ({ items, onRefreshItems }) =
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-base font-bold text-zinc-900">
-                  จัดการสิทธิ์และบทบาทผู้ใช้งาน (User & Role Permission Management)
+                <h2 className="font-display text-base font-bold text-zinc-900">
+                  จัดการสิทธิ์และบทบาทผู้ใช้งาน
                 </h2>
-                <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-700">
-                  {usersList.length} บัญชี
+                <span className="text-xs font-mono font-semibold text-zinc-500">
+                  · {usersList.length} บัญชี
                 </span>
                 {pendingUsersCount > 0 && (
-                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-500 text-white animate-pulse">
+                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
                     รออนุมัติ {pendingUsersCount}
                   </span>
                 )}
@@ -1131,7 +1131,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ items, onRefreshItems }) =
                   setNewUserPermissions(getDefaultPermissionsForRole('staff'));
                   setShowAddUserModal(true);
                 }}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-rose-600 text-white text-xs font-bold hover:bg-rose-700 transition-colors shadow-xs"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-rose-600 text-white text-xs font-bold hover:bg-rose-700 transition-colors shadow-xs whitespace-nowrap shrink-0"
               >
                 <UserPlus className="w-4 h-4" />
                 <span>เพิ่มพนักงานใหม่</span>
@@ -1149,14 +1149,14 @@ export const AdminView: React.FC<AdminViewProps> = ({ items, onRefreshItems }) =
 
         {/* Priority: Pending Approvals Queue */}
         {pendingUsersCount > 0 && (
-          <div className="mt-5 p-4 rounded-2xl bg-amber-50 border-2 border-amber-300 shadow-xs">
+          <div className="mt-5 p-4 rounded-2xl bg-amber-50/90 border border-amber-300 shadow-2xs">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2 font-bold text-xs text-amber-900">
-                <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping" />
+                <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
                 <span>คำขอเข้าใช้งานใหม่รอ Master Admin อนุมัติ ({pendingUsersCount} บัญชี)</span>
               </div>
-              <span className="text-[10px] font-bold bg-amber-200 text-amber-900 px-2 py-0.5 rounded-full">
-                ต้องการการดำเนินการ
+              <span className="text-[11px] font-semibold text-amber-800">
+                ต้องการการตรวจสอบ
               </span>
             </div>
 

@@ -168,23 +168,22 @@ export const InfographicFinancialCharts: React.FC<InfographicFinancialChartsProp
     <div className="space-y-6">
       {/* SECTION HEADER */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-zinc-200 pb-3">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <div className="p-2 rounded-xl bg-gradient-to-br from-rose-600 to-indigo-600 text-white shadow-xs">
             <PieIcon className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="font-extrabold text-base sm:text-lg text-zinc-900 tracking-tight">
-              อินโฟกราฟฟิกการเงิน & แผนภูมิเปรียบเทียบ (Financial Infographic & Pie Chart)
+            <h3 className="font-display font-bold text-base sm:text-lg text-zinc-900 tracking-tight">
+              อินโฟกราฟฟิกการเงิน & แผนภูมิเปรียบเทียบ
             </h3>
             <p className="text-xs text-zinc-500">
-              วิเคราะห์เปรียบเทียบรายรับ ค่าใช้จ่าย กำไรสุทธิ อัตรากำไร และ Prime Cost ({periodLabel})
+              วิเคราะห์เปรียบเทียบรายรับ ค่าใช้จ่าย กำไรสุทธิ อัตรากำไร และ Prime Cost · {periodLabel}
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 text-xs bg-zinc-100 px-3 py-1.5 rounded-xl border border-zinc-200 font-medium text-zinc-700">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span>คำนวณสดตามช่วงเวลา</span>
+        <div className="text-xs font-medium text-zinc-500 whitespace-nowrap">
+          อัปเดตตามข้อมูลจริงในระบบ
         </div>
       </div>
 

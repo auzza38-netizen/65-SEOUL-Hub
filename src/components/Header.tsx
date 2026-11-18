@@ -69,15 +69,25 @@ export const Header: React.FC<HeaderProps> = ({
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown on outside click
+  // Close dropdown on outside click or Escape key
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setOpenDropdown(null);
       }
     };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setOpenDropdown(null);
+        setMobileMenuOpen(false);
+      }
+    };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
   // Determine which dropdown group is currently active
@@ -86,7 +96,7 @@ export const Header: React.FC<HeaderProps> = ({
   const isStockActive = ['stock-check', 'items'].includes(activeTab);
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-zinc-200 shadow-xs">
+    <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-zinc-200/80">
       {/* In-App Browser Warning (LINE / Facebook) */}
       {isInAppBrowser && !currentUser && (
         <div className="bg-amber-500 text-zinc-950 px-4 py-2 text-xs font-medium">
@@ -112,13 +122,13 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="flex items-center gap-2">
               <button
                 onClick={() => signInWithGoogle(true)}
-                className="px-2.5 py-1 rounded-md bg-rose-600 hover:bg-rose-700 text-white font-semibold text-[11px]"
+                className="px-2.5 py-1 rounded-md bg-rose-600 hover:bg-rose-700 text-white font-semibold text-[11px] whitespace-nowrap shrink-0"
               >
                 เข้าสู่ระบบโหมด Redirect (สำหรับมือถือ)
               </button>
               <button
                 onClick={clearAuthError}
-                className="text-rose-700 hover:text-rose-900 text-xs px-2 py-1 font-bold"
+                className="text-rose-700 hover:text-rose-900 text-xs px-2 py-1 font-bold whitespace-nowrap shrink-0"
               >
                 ✕ ปิด
               </button>
@@ -129,41 +139,29 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Main Navigation Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Left: Brand & Logo */}
-          <div className="flex items-center gap-3">
-            <div 
-              onClick={() => setActiveTab('dashboard')} 
-              className="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-600 to-rose-700 flex items-center justify-center text-white shadow-sm ring-2 ring-rose-600/20 cursor-pointer transition-transform hover:scale-105"
-            >
-              <span className="font-extrabold text-sm tracking-tight">65</span>
+        <div className="flex items-center justify-between gap-4 h-16">
+          {/* Left: Clean Brand Wordmark */}
+          <button
+            type="button"
+            onClick={() => setActiveTab('dashboard')}
+            className="flex items-center gap-2.5 text-left group shrink-0"
+          >
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-rose-600 to-rose-700 flex items-center justify-center text-white shadow-xs group-hover:scale-105 transition-transform duration-150">
+              <span className="font-display font-extrabold text-sm tracking-tight">65</span>
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span 
-                  onClick={() => setActiveTab('dashboard')} 
-                  className="font-black text-lg text-zinc-900 tracking-tight cursor-pointer hover:text-rose-600 transition-colors"
-                >
-                  65 SEOUL
-                </span>
-                <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-700 border border-zinc-200">
-                  서울
-                </span>
-              </div>
-              <p className="text-[11px] text-zinc-500 hidden sm:block">
-                ระบบสต็อก จัดซื้อ & ผลประกอบการ
-              </p>
-            </div>
-          </div>
+            <span className="font-display font-extrabold text-lg text-zinc-900 tracking-tight whitespace-nowrap group-hover:text-rose-600 transition-colors">
+              65 SEOUL
+            </span>
+          </button>
 
-          {/* Center: Dropdown Navigation (Space-Saving) */}
-          <div ref={dropdownRef} className="hidden md:flex items-center space-x-1.5 lg:space-x-2">
+          {/* Center: Clean Single-Line Navigation */}
+          <nav ref={dropdownRef} className="hidden md:flex items-center gap-1 lg:gap-1.5">
             {/* 1. Finance & P&L Dropdown */}
             <div className="relative">
               <button
                 type="button"
                 onClick={() => setOpenDropdown(openDropdown === 'finance' ? null : 'finance')}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap shrink-0 ${
                   isFinanceActive
                     ? 'bg-zinc-900 text-white shadow-xs'
                     : 'text-zinc-700 hover:bg-zinc-100'
@@ -171,7 +169,7 @@ export const Header: React.FC<HeaderProps> = ({
               >
                 <TrendingUp className={`w-4 h-4 ${isFinanceActive ? 'text-emerald-400' : 'text-emerald-600'}`} />
                 <span>การเงิน & แดชบอร์ด</span>
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${openDropdown === 'finance' ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-150 ${openDropdown === 'finance' ? 'rotate-180' : ''}`} />
               </button>
 
               {openDropdown === 'finance' && (
@@ -255,7 +253,7 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 type="button"
                 onClick={() => setOpenDropdown(openDropdown === 'purchase' ? null : 'purchase')}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all relative ${
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all relative whitespace-nowrap shrink-0 ${
                   isPurchaseActive
                     ? 'bg-zinc-900 text-white shadow-xs'
                     : 'text-zinc-700 hover:bg-zinc-100'
@@ -264,11 +262,11 @@ export const Header: React.FC<HeaderProps> = ({
                 <Receipt className={`w-4 h-4 ${isPurchaseActive ? 'text-rose-400' : 'text-rose-500'}`} />
                 <span>จัดซื้อ & สแกนบิล</span>
                 {pendingPurchasesCount > 0 && (
-                  <span className="text-[10px] font-extrabold px-1.5 py-0.2 rounded-full bg-amber-500 text-white">
+                  <span className="text-[10px] font-bold font-mono tabular-nums px-1.5 py-0.5 rounded-full bg-amber-500 text-white leading-none">
                     {pendingPurchasesCount}
                   </span>
                 )}
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${openDropdown === 'purchase' ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-150 ${openDropdown === 'purchase' ? 'rotate-180' : ''}`} />
               </button>
 
               {openDropdown === 'purchase' && (
@@ -325,7 +323,7 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 type="button"
                 onClick={() => setOpenDropdown(openDropdown === 'stock' ? null : 'stock')}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all relative ${
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all relative whitespace-nowrap shrink-0 ${
                   isStockActive
                     ? 'bg-zinc-900 text-white shadow-xs'
                     : 'text-zinc-700 hover:bg-zinc-100'
@@ -334,11 +332,11 @@ export const Header: React.FC<HeaderProps> = ({
                 <ClipboardCheck className={`w-4 h-4 ${isStockActive ? 'text-amber-400' : 'text-amber-500'}`} />
                 <span>สต็อก & วัตถุดิบ</span>
                 {lowStockCount > 0 && (
-                  <span className="text-[10px] font-extrabold px-1.5 py-0.2 rounded-full bg-rose-500 text-white">
+                  <span className="text-[10px] font-bold font-mono tabular-nums px-1.5 py-0.5 rounded-full bg-rose-500 text-white leading-none">
                     {lowStockCount}
                   </span>
                 )}
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${openDropdown === 'stock' ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-150 ${openDropdown === 'stock' ? 'rotate-180' : ''}`} />
               </button>
 
               {openDropdown === 'stock' && (
@@ -394,18 +392,21 @@ export const Header: React.FC<HeaderProps> = ({
             {isAdmin && (
               <button
                 type="button"
-                onClick={() => setActiveTab('admin')}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
+                onClick={() => {
+                  setActiveTab('admin');
+                  setOpenDropdown(null);
+                }}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap shrink-0 ${
                   activeTab === 'admin'
                     ? 'bg-rose-600 text-white shadow-xs'
                     : 'text-zinc-700 hover:bg-zinc-100'
                 }`}
               >
-                <ShieldCheck className="w-4 h-4 text-rose-500" />
-                <span>จัดการระบบ & อนุมัติสิทธิ์</span>
+                <ShieldCheck className={`w-4 h-4 ${activeTab === 'admin' ? 'text-white' : 'text-rose-500'}`} />
+                <span>จัดการระบบ & สิทธิ์</span>
               </button>
             )}
-          </div>
+          </nav>
 
           {/* Right: User Profile & Actions */}
           <div className="flex items-center gap-2 sm:gap-3">

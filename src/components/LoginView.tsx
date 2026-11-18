@@ -125,25 +125,19 @@ export const LoginView: React.FC = () => {
       </div>
 
       {/* Header Bar */}
-      <header className="relative z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 flex items-center justify-between">
+      <header className="relative z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 flex items-center justify-between gap-8">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-rose-500 to-rose-700 flex items-center justify-center font-black text-white text-base shadow-lg shadow-rose-900/40 ring-2 ring-rose-500/30">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-500 to-rose-700 flex items-center justify-center font-display font-extrabold text-white text-base shadow-lg shadow-rose-900/40">
             65
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-extrabold text-lg tracking-tight text-white">65 SEOUL</span>
-              <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-rose-950/80 text-rose-300 border border-rose-800/60">
-                서울 BBQ
-              </span>
-            </div>
-            <p className="text-[11px] text-zinc-400">Stock & Purchase Financial Hub</p>
-          </div>
+          <span className="font-display font-extrabold text-lg tracking-tight text-white whitespace-nowrap">
+            65 SEOUL
+          </span>
         </div>
 
-        <div className="hidden sm:flex items-center gap-2 text-xs text-zinc-400 bg-zinc-900/80 px-3 py-1.5 rounded-xl border border-zinc-800">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>Google Auth & Master Admin Approval Gate</span>
+        <div className="hidden sm:flex items-center gap-2 text-xs text-zinc-400">
+          <ShieldCheck className="w-4 h-4 text-emerald-400" />
+          <span>Google Auth & Master Admin Approval</span>
         </div>
       </header>
 
@@ -151,7 +145,7 @@ export const LoginView: React.FC = () => {
       <main className="relative z-10 max-w-4xl mx-auto w-full px-4 py-6 sm:py-10 flex flex-col items-center">
         {/* Error Notification */}
         {(authError || localFormError) && (
-          <div className="w-full max-w-md mb-6 p-4 rounded-2xl bg-rose-950/80 border border-rose-800/80 text-rose-200 text-xs shadow-xl flex items-start justify-between gap-3 animate-in fade-in">
+          <div className="w-full max-w-md mb-6 p-4 rounded-2xl bg-rose-950/80 border border-rose-800/80 text-rose-200 text-xs shadow-xl flex items-start justify-between gap-3">
             <div className="flex items-start gap-2.5">
               <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
               <div>
@@ -164,7 +158,7 @@ export const LoginView: React.FC = () => {
                 clearAuthError();
                 setLocalFormError(null);
               }}
-              className="text-rose-400 hover:text-white font-bold text-xs"
+              className="text-rose-400 hover:text-white font-bold text-xs p-1"
             >
               ✕
             </button>
@@ -190,21 +184,21 @@ export const LoginView: React.FC = () => {
         )}
 
         {/* Login Box */}
-        <div className="w-full max-w-md bg-zinc-900/90 backdrop-blur-xl border border-zinc-800/90 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+        <div className="w-full max-w-md bg-zinc-900/90 backdrop-blur-xl border border-zinc-800 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
           <div className="text-center mb-6">
             <div className="inline-flex p-3 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-400 mb-3">
               <Lock className="w-6 h-6" />
             </div>
-            <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+            <h1 className="font-display text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
               เข้าสู่ระบบ 65 SEOUL
             </h1>
-            <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed">
+            <p className="text-xs sm:text-sm text-zinc-400 mt-1.5 leading-relaxed">
               ระบบบริหารสต็อก จัดซื้อ และวิเคราะห์ผลประกอบการร้านอาหารเกาหลี
             </p>
           </div>
 
           {/* Tab Selector: Google / Email Login / Register */}
-          <div className="flex p-1 bg-zinc-950/80 rounded-2xl border border-zinc-800 mb-6">
+          <div className="flex p-1 bg-zinc-950/90 rounded-2xl border border-zinc-800 mb-6 gap-1">
             <button
               type="button"
               onClick={() => {

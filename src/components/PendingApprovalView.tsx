@@ -31,26 +31,20 @@ export const PendingApprovalView: React.FC = () => {
     <div className="min-h-screen bg-[#F8F9FA] text-zinc-900 flex flex-col justify-between selection:bg-rose-500 selection:text-white">
       {/* Top Header */}
       <header className="bg-white border-b border-zinc-200">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-8">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-rose-600 to-rose-700 flex items-center justify-center font-bold text-white text-base shadow-sm ring-2 ring-rose-600/20">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-rose-600 to-rose-700 flex items-center justify-center font-display font-bold text-white text-sm shadow-xs">
               65
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-extrabold text-base sm:text-lg text-zinc-900 tracking-tight">65 SEOUL</span>
-                <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-700 border border-zinc-200">
-                  서울
-                </span>
-              </div>
-              <p className="text-xs text-zinc-500">ระบบบริหารสต็อก จัดซื้อ และผลประกอบการ</p>
-            </div>
+            <span className="font-display font-extrabold text-lg text-zinc-900 tracking-tight whitespace-nowrap">
+              65 SEOUL
+            </span>
           </div>
 
           <button
             type="button"
             onClick={signOut}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-zinc-200 text-xs font-semibold text-zinc-700 hover:bg-zinc-100 transition-colors"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-zinc-200 text-xs font-semibold text-zinc-700 hover:bg-zinc-100 transition-colors whitespace-nowrap shrink-0"
           >
             <LogOut className="w-3.5 h-3.5 text-zinc-500" />
             <span>ออกจากระบบ</span>
@@ -60,22 +54,22 @@ export const PendingApprovalView: React.FC = () => {
 
       {/* Main Card */}
       <main className="flex-1 flex items-center justify-center p-4 sm:p-6">
-        <div className="max-w-lg w-full bg-white rounded-3xl border border-zinc-200 p-6 sm:p-8 shadow-xl text-center animate-in fade-in zoom-in-95">
+        <div className="max-w-lg w-full bg-white rounded-3xl border border-zinc-200 p-6 sm:p-8 shadow-sm text-center">
           {/* Status Icon */}
-          <div className="w-16 h-16 rounded-3xl mx-auto flex items-center justify-center mb-5 ring-8">
+          <div className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-5">
             {isRejected ? (
-              <div className="w-16 h-16 rounded-3xl bg-rose-50 text-rose-600 ring-8 ring-rose-100 flex items-center justify-center">
+              <div className="w-16 h-16 rounded-2xl bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center">
                 <XCircle className="w-8 h-8" />
               </div>
             ) : (
-              <div className="w-16 h-16 rounded-3xl bg-amber-50 text-amber-600 ring-8 ring-amber-100 flex items-center justify-center">
-                <Clock className="w-8 h-8 animate-pulse" />
+              <div className="w-16 h-16 rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center">
+                <Clock className="w-8 h-8" />
               </div>
             )}
           </div>
 
           {/* Heading */}
-          <h2 className="text-xl sm:text-2xl font-black text-zinc-900 tracking-tight">
+          <h2 className="font-display text-xl sm:text-2xl font-extrabold text-zinc-900 tracking-tight">
             {isRejected ? 'บัญชีนี้ยังไม่ได้รับสิทธิ์เข้าใช้งาน' : 'รอ Master Admin อนุมัติสิทธิ์'}
           </h2>
 
@@ -93,15 +87,15 @@ export const PendingApprovalView: React.FC = () => {
 
           {/* Current User Card */}
           <div className="my-6 p-4 rounded-2xl bg-zinc-50 border border-zinc-200/90 text-left">
-            <span className="text-[11px] font-semibold text-zinc-400 block mb-2 uppercase tracking-wider">
-              ข้อมูลบัญชีผู้ใช้งานที่กำลังล็อกอิน:
+            <span className="text-[11px] font-semibold text-zinc-500 block mb-2">
+              ข้อมูลบัญชีผู้ใช้งานที่กำลังล็อกอิน
             </span>
             <div className="flex items-center gap-3">
               {currentUser?.photoURL ? (
                 <img
                   src={currentUser.photoURL}
                   alt={currentUser.displayName || 'User'}
-                  className="w-11 h-11 rounded-2xl object-cover ring-2 ring-zinc-200"
+                  className="w-11 h-11 rounded-2xl object-cover border border-zinc-200"
                 />
               ) : (
                 <div className="w-11 h-11 rounded-2xl bg-zinc-800 text-white font-bold flex items-center justify-center text-sm">
@@ -113,13 +107,11 @@ export const PendingApprovalView: React.FC = () => {
                   {userProfile?.displayName || currentUser?.displayName || 'ผู้ใช้งาน'}
                 </div>
                 <div className="text-xs text-zinc-500 font-mono truncate">{currentUser?.email}</div>
-                <div className="mt-1">
-                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                    isRejected ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800'
-                  }`}>
-                    {isRejected ? <XCircle className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
-                    <span>{isRejected ? 'ปฏิเสธ / ระงับสิทธิ์' : 'สถานะ: รอการอนุมัติ (Pending)'}</span>
-                  </span>
+                <div className={`mt-1 text-xs font-semibold flex items-center gap-1.5 ${
+                  isRejected ? 'text-rose-700' : 'text-amber-700'
+                }`}>
+                  {isRejected ? <XCircle className="w-3.5 h-3.5" /> : <Clock className="w-3.5 h-3.5" />}
+                  <span>{isRejected ? 'ปฏิเสธ / ระงับสิทธิ์' : 'สถานะ · รอการอนุมัติ (Pending)'}</span>
                 </div>
               </div>
             </div>

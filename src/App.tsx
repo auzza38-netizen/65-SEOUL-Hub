@@ -269,13 +269,15 @@ function MainAppContent() {
       </main>
 
       {/* Footer Branding */}
-      <footer className="border-t border-zinc-200 bg-white py-4 text-center text-xs text-zinc-600">
-        <p className="font-medium">
-          65 SEOUL | Stock & Purchase Hub • ระบบบริหารสต็อกและจัดซื้อสำหรับร้านอาหารเกาหลี 65 Seoul
-        </p>
-        <p className="text-[11px] text-zinc-500 mt-0.5">
-          เชื่อมต่อ Cloud Firestore • Backend Gemini OCR ปลอดภัย • รองรับมือถือและแท็บเล็ต
-        </p>
+      <footer className="border-t border-zinc-200/80 bg-white py-5 text-center text-xs text-zinc-500">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <p className="font-medium text-zinc-600">
+            65 SEOUL · ระบบบริหารสต็อก จัดซื้อ และผลประกอบการร้านอาหารเกาหลี
+          </p>
+          <p className="text-[11px] text-zinc-400">
+            Stock, Purchase OCR & Financial Management
+          </p>
+        </div>
       </footer>
     </div>
   );
